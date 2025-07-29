@@ -12,16 +12,29 @@ import com.springwebflux.jpa.controller.StreamController;
 @Configuration
 public class StreamRouter {
 
-    private final StreamController streamController;
+	private final StreamController streamController;
 
-    public StreamRouter(StreamController streamController) {
-        this.streamController = streamController;
-    }
+	public StreamRouter(StreamController streamController) {
+		this.streamController = streamController;
+	}
 
-    @Bean
-    public RouterFunction<ServerResponse> router() {
-        return RouterFunctions
-                .route(RequestPredicates.GET("/stream"), streamController::streamHiHandler)
-                .andRoute(RequestPredicates.GET("/mono/{name}"), streamController::hiMono);
-    }
+	@Bean
+	RouterFunction<ServerResponse> routes() {
+	    return RouterFunctions.route()
+	            // Streaming
+	            .GET("/stream", streamController::streamHiHandler)
+	            .GET("/mono/{name}", streamController::hiMono)
+
+	            // Student read
+	            .GET("/getStudents", streamController::getAllStudents)
+	            .GET("/getStudentById/{id}", streamController::getStudentById)
+	            .GET("/search", streamController::searchStudentsByName)
+
+	            // Student write
+	            .POST("/addStudent", streamController::createStudent)
+	            .PUT("/updateStudent/{id}", streamController::updateStudent)
+                
+	            .DELETE("deleteStudent/{id}",streamController::deleteStudent)
+	            .build();
+	}
 }
