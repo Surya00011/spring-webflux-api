@@ -103,7 +103,7 @@ public class StreamController {
 	                studentRepo.delete(existing)
 	                        .then(ServerResponse.noContent().build()) 
 	            )
-	            .switchIfEmpty(ServerResponse.notFound().build());
+	            .switchIfEmpty(Mono.error(new StudentNotFoundException(id)));
 	}
 
 
